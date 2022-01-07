@@ -40,7 +40,7 @@ export default function Tour() {
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 1 }}>
               When you click on the login button below, you will be asked to allow access to your account data. Please note that none of it is stored anywhere by this app.
-              Also, this app does not collect any passwords, all login is done through Spotify itself. The app does, however, store the access, and refresh, tokens so that the user doesn't need to login multiple times.
+              Also, this app does not collect any passwords, all login is done through Spotify itself. The app does, however, store the access, and refresh, tokens so that the user does&apos;t need to login multiple times.
             </Typography>
             <Typography id="modal-modal-description" sx={{ mt: 2 }}>
               Other build features: 
@@ -61,7 +61,7 @@ export default function Tour() {
               - Debounced api calls
             </Typography>
             <Typography id="modal-modal-description">
-              - Oh, and it's built in React
+              - Oh, and it&apos;s built in React
             </Typography>
           </Box>
         </Modal>
