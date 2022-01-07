@@ -1,4 +1,5 @@
 import { getProviders, signIn } from 'next-auth/react';
+import Tour from '../components/Tour';
 
 function Login({providers}) {
     return (
@@ -15,6 +16,7 @@ function Login({providers}) {
                     </button>
                 </div>
             ))}
+            <Tour/>
         </div>
     )
 }
