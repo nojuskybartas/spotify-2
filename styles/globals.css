@@ -23,4 +23,12 @@ a {
   .button {
     @apply h-5 w-5 cursor-pointer hover:scale-125 transition transform duration-100 ease-out;
   }
+
+  .tour-text-title {
+    @apply text-2xl lg:text-4xl;
+  }
+
+  .tour-text {
+    @apply text-xs lg:text-lg;
+  }
 }
