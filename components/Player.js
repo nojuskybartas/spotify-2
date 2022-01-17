@@ -15,6 +15,7 @@ function Player() {
     const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState);
     const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
     const [volume, setVolume] = useState(50);
+    const [currentDevice, setCurrentDevice] = useState(null)
 
     const songInfo = useSongInfo();
 
@@ -30,6 +31,7 @@ function Player() {
     }
 
     const handlePlayPause = () => {
+        
         spotifyApi.getMyCurrentPlaybackState().then((data) => {
             if (data.body.is_playing) {
                 spotifyApi.pause();
@@ -40,6 +42,58 @@ function Player() {
             }
         })
     }
+
+    useEffect(() => {
+
+        const CreateWebPlayback = async() => {
+
+            // Load spotify player script
+            const script = document.createElement("script");
+            script.src = "https://sdk.scdn.co/spotify-player.js";
+            script.async = true;
+            document.body.appendChild(script);
+        
+            // create the player
+            await new Promise((resolve, reject) => {
+                window.onSpotifyWebPlaybackSDKReady = () => {
+                    const player = new window.Spotify.Player({
+                        name: 'Spotify UI Clone',
+                        getOAuthToken: cb => { cb(spotifyApi.getAccessToken()); },
+                        volume: 0.5
+                    });
+                    player.connect();
+                    resolve()
+                };
+            })
+        }
+
+        const getDevice = async () => {
+
+            if (!currentDevice) {
+                await CreateWebPlayback()
+                console.log('created new player device')
+            }
+
+            // wrapping it in a loop because after the device is initialized, the api needs a bit of time (or more preciselly, couple of calls) to find it and return it, and the exact time / number of calls is unknown
+            while (true) {
+                const devices = await spotifyApi.getMyDevices()
+                const device = (devices.body?.devices).find(dev => {
+                    return dev.name === 'Spotify UI Clone'
+                }) 
+                if (device) { setCurrentDevice(device); break}
+                else { await new Promise(resolve => setTimeout(resolve, 500)) }
+
+            }
+        }
+        
+        getDevice()
+
+     }, [])
+
+    useEffect(() => {
+        if (currentDevice) { spotifyApi.transferMyPlayback([currentDevice.id]); }
+    }, [currentDevice])
+    
 
     useEffect(() => {
         if (spotifyApi.getAccessToken() && !currentTrackId) {
@@ -62,6 +116,8 @@ function Player() {
     )
 
     return (
+        <div>
+
         <div className="h-24 bg-gradient-to-b from-black to-gray-900 text-white grid grid-cols-3 text-xs md:text-base px-2 md:px-8">
             {/* left */}
             <div className="flex items-center space-x-4">
@@ -95,6 +151,7 @@ function Player() {
                 <input  className='w-14 md:w-28' type='range' value={volume} min={0} max={100} onChange={(e) => setVolume(Number(e.target.value))} />
                 <VolumeUpIcon className="button" onClick={() => volume < 100 && setVolume(volume+10)}/>
             </div>
+        </div>
         </div>
     )
 }
