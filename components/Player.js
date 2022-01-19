@@ -61,6 +61,13 @@ function Player() {
                         getOAuthToken: cb => { cb(spotifyApi.getAccessToken()); },
                         volume: 0.5
                     });
+
+                    player.addListener('player_state_changed', ( state => {
+                        if (!state) return;
+                        setIsPlaying(state.body?.is_playing)
+                        fetchCurrentSong()
+                    }));
+
                     player.connect();
                     resolve()
                 };
@@ -117,7 +124,7 @@ function Player() {
 
     return (
         <div>
-
+        { currentTrackId &&
         <div className="h-24 bg-gradient-to-b from-black to-gray-900 text-white grid grid-cols-3 text-xs md:text-base px-2 md:px-8">
             {/* left */}
             <div className="flex items-center space-x-4">
@@ -148,10 +155,11 @@ function Player() {
             </div>
             <div className="flex items-center space-x-3 md:space-x-4 justify-end pr-5">
                 <VolumeDownIcon className="button" onClick={() => volume > 0 && setVolume(volume-10)}/>
-                <input  className='w-14 md:w-28' type='range' value={volume} min={0} max={100} onChange={(e) => setVolume(Number(e.target.value))} />
+                <input className="rounded-lg overflow-hidden appearance-none bg-gray-700 h-3 w-24 md:w-32" type="range" value={volume} min={0} max={100} onChange={(e) => setVolume(Number(e.target.value))} />
+                {/* <input  className='w-14 md:w-28' type='range' value={volume} min={0} max={100} onChange={(e) => setVolume(Number(e.target.value))} /> */}
                 <VolumeUpIcon className="button" onClick={() => volume < 100 && setVolume(volume+10)}/>
             </div>
-        </div>
+        </div>}
         </div>
     )
 }

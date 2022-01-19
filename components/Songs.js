@@ -1,10 +1,10 @@
 import { useRecoilValue } from "recoil"
-import { playlistState } from "../atoms/playlistAtom"
+import { currentPlaylistState } from "../atoms/playlistAtom"
 import Song from "./Song";
 
 function Songs() {
 
-    const playlist = useRecoilValue(playlistState);
+    const playlist = useRecoilValue(currentPlaylistState);
 
 
     return (

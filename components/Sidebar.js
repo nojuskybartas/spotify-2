@@ -1,16 +1,23 @@
-import { HomeIcon, SearchIcon, LibraryIcon, PlusCircleIcon, HeartIcon, RssIcon } from '@heroicons/react/outline';
-import { signOut, useSession } from 'next-auth/react';
+import { HomeIcon, SearchIcon, LibraryIcon, PlusCircleIcon, HeartIcon, RssIcon, MenuIcon, MenuAlt2Icon } from '@heroicons/react/outline';
+import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { playlistIdState } from '../atoms/playlistAtom';
+import { centerDisplayAtom } from '../atoms/centerDisplayAtom';
+import { currentPlaylistIdState, playlistState } from '../atoms/playlistAtom';
 import useSpotify from '../hooks/useSpotify';
+import LibraryView from './LibraryView';
+import PlaylistView from './PlaylistView';
 
 function Sidebar() {
 
     const spotifyApi = useSpotify();
     const { data: session, status } = useSession();
-    const [playlists, setPlaylists] = useState([]);
-    const [playlistId, setPlaylistId] = useRecoilState(playlistIdState);
+    const [playlists, setPlaylists] = useRecoilState(playlistState);
+    const [playlistId, setPlaylistId] = useRecoilState(currentPlaylistIdState);
+    const [extraClassname, setExtraClassname] = useState('hidden');
+    const [hidden, setHidden] = useState(true)
+
+    const [view, setView] = useRecoilState(centerDisplayAtom)
 
     useEffect(() => {
         if (spotifyApi.getAccessToken()) {
@@ -20,9 +27,27 @@ function Sidebar() {
         }
     }, [session, spotifyApi])
 
+    const hideSidebar = () => {
+        setHidden(true)
+        setExtraClassname('hidden')
+    }
+
+    const showSidebar = () => {
+        setHidden(false)
+        setExtraClassname('inline-flex')
+    }
+
+    const handleSidebarShow = () => {
+        hidden ? showSidebar() : hideSidebar()
+    }
+
 
     return (
-        <div className='text-gray-500 p-5 text-xs lg:text-sm border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen sm:max-w-[12rem] lg:max-w-[15rem] hidden md:inline-flex pb-36'>
+        <div className='flex flex-col' >
+            <header className={hidden ? "absolute top-5 left-7 text-black md:hidden" : "relative top-5 left-7 mb-4 text-white md:hidden"} onClick={handleSidebarShow}>
+                {hidden ? <MenuIcon className="w-12 h-12"/> : <MenuAlt2Icon className="w-12 h-12"/>}
+            </header>
+            <div className={`text-gray-500 p-5 text-xs lg:text-sm border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen w-[10rem] md:w-full sm:max-w-[12rem] lg:max-w-[15rem] md:inline-flex pb-36 ${extraClassname}`}>
             <div className='space-y-4'>
                 <button className='flex items-center space-x-2 hover:text-white'>
                     <HomeIcon className='h-5 w-5'/>
@@ -32,7 +57,7 @@ function Sidebar() {
                     <SearchIcon className='h-5 w-5'/>
                     <p>Search</p>
                 </button>
-                <button className='flex items-center space-x-2 hover:text-white'>
+                <button className='flex items-center space-x-2 hover:text-white' onClick={() => setView(<LibraryView/>)}>
                     <LibraryIcon className='h-5 w-5'/>
                     <p>Your Library</p>
                 </button>
@@ -52,11 +77,13 @@ function Sidebar() {
                 </button>
                 <hr className='border-t-[0.1px] border-gray-900'/>
 
-                {playlists.map((playlist) => (
-                    <p key={playlist.id} className='cursor-pointer hover:text-white' onClick={() => setPlaylistId(playlist.id)}>{playlist.name}</p>
+                {playlists?.map((playlist) => (
+                    <p key={playlist.id} className='cursor-pointer hover:text-white' onClick={() => {setPlaylistId(playlist.id); setView(<PlaylistView/>)}}>{playlist.name}</p>
                 ))}
             </div>
+            </div>
         </div>
+        
     )
 }
 

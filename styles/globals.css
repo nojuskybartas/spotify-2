@@ -15,9 +15,65 @@ a {
   box-sizing: border-box;
 }
 
+.element {
+  width: 300px;
+  height: 240px;
+  box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.5);
+  border: 1px solid rgba(127, 255, 255, 0.25);
+  text-align: center;
+  cursor: default;
+}
+
+/* .grow { transition: all .2s ease-in-out; }
+.grow:hover { transform: scale(1.1); } */
+
+.element:hover {
+  box-shadow: 0px 0px 12px rgba(0, 255, 255, 0.75);
+  border: 1px solid rgba(127, 255, 255, 0.75);
+}
+
+.element .number {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 12px;
+  color: rgba(127, 255, 255, 0.75);
+}
+
+.element .symbol {
+  position: absolute;
+  top: 40px;
+  left: 0px;
+  right: 0px;
+  font-size: 60px;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.95);
+}
+
+.element .details {
+  position: absolute;
+  bottom: 15px;
+  left: 0px;
+  right: 0px;
+  font-size: 12px;
+  color: rgba(127, 255, 255, 0.75);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input[type="range"]::-webkit-slider-thumb {
+  width: 15px;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 15px;
+  cursor: ew-resize;
+  background: #fff;
+  box-shadow: -405px 0 0 400px #868483;
+  border-radius: 50%;
+}
 
 @layer components {
   .button {
@@ -31,4 +87,69 @@ a {
   .tour-text {
     @apply text-xs lg:text-lg;
   }
+
+  .test-border {
+    @apply border border-solid border-red-600;
+  }
 }
+
+.soundBar {
+  background: #e20074;
+  bottom: 1px;
+  height: 5px;
+  position: absolute;
+  width: 2px;
+  animation: sound 0ms -800ms linear infinite alternate;
+}
+
+@keyframes sound {
+  0% {
+    opacity: 0.35;
+    height: 5px;
+  }
+  100% {
+    opacity: 1;
+    height: 100%;
+  }
+}
+
+.soundBar:nth-child(1) {
+  left: 1px;
+  animation-duration: 474ms;
+}
+.soundBar:nth-child(2) {
+  left: 5px;
+  animation-duration: 433ms;
+}
+.soundBar:nth-child(3) {
+  left: 9px;
+  animation-duration: 407ms;
+}
+.soundBar:nth-child(4) {
+  left: 13px;
+  animation-duration: 458ms;
+}
+.soundBar:nth-child(5) {
+  left: 17px;
+  animation-duration: 400ms;
+}
+/* .bar:nth-child(6) {
+  left: 21px;
+  animation-duration: 427ms;
+}
+.bar:nth-child(7) {
+  left: 25px;
+  animation-duration: 441ms;
+}
+.bar:nth-child(8) {
+  left: 29px;
+  animation-duration: 419ms;
+}
+.bar:nth-child(9) {
+  left: 33px;
+  animation-duration: 487ms;
+}
+.bar:nth-child(10) {
+  left: 37px;
+  animation-duration: 442ms;
+} */
