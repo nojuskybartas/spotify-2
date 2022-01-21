@@ -1,17 +1,19 @@
 import { PlayIcon } from "@heroicons/react/solid";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { currentTrackIdState, isPlayingState } from "../atoms/songAtom";
 import useSpotify from "../hooks/useSpotify"
 import { formatTime } from "../lib/time";
 import UseAnimations from "react-useanimations";
 import activity from 'react-useanimations/lib/activity'
 import AudioWave from "./AudioWave";
+import { currentPlaylistState } from "../atoms/playlistAtom";
 
 function Song({order, track}) {
 
     const spotifyApi = useSpotify();
     const [currentTrackId, setCurrentTrackId] = useRecoilState(currentTrackIdState)
     const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState)
+    const playlist = useRecoilValue(currentPlaylistState)
 
     const playSong = () => {
         setCurrentTrackId(track.track.id);
@@ -19,6 +21,10 @@ function Song({order, track}) {
         spotifyApi.play({
             uris: [track.track.uri],
         })
+
+        if (playlist) {
+            spotifyApi.addToQueue(playlist.tracks.items[order+1].track.uri)
+        }
     }
 
     const thisPlaying = () => {

@@ -2,6 +2,7 @@ import { HomeIcon, SearchIcon, LibraryIcon, PlusCircleIcon, HeartIcon, RssIcon, 
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
+import { albumState } from '../atoms/albumAtom';
 import { centerDisplayAtom } from '../atoms/centerDisplayAtom';
 import { currentPlaylistIdState, playlistState } from '../atoms/playlistAtom';
 import useSpotify from '../hooks/useSpotify';
@@ -13,6 +14,7 @@ function Sidebar() {
     const spotifyApi = useSpotify();
     const { data: session, status } = useSession();
     const [playlists, setPlaylists] = useRecoilState(playlistState);
+    const [albums, setAlbums] = useRecoilState(albumState)
     const [playlistId, setPlaylistId] = useRecoilState(currentPlaylistIdState);
     const [extraClassname, setExtraClassname] = useState('hidden');
     const [hidden, setHidden] = useState(true)
@@ -23,6 +25,9 @@ function Sidebar() {
         if (spotifyApi.getAccessToken()) {
             spotifyApi.getUserPlaylists().then((data) => {
                 setPlaylists(data.body.items);
+            })
+            spotifyApi.getMySavedAlbums().then((data) => {
+                setAlbums(data.body.items);
             })
         }
     }, [session, spotifyApi])

@@ -1,22 +1,32 @@
 import { ChevronDownIcon } from "@heroicons/react/outline"
-import Playlists from "./Playlists"
+import { useState } from "react"
+import { useRecoilState } from "recoil"
+import { libraryViewState } from "../atoms/libraryAtom"
+import LibraryItems from "./LibraryItems"
 import ProfileButton from "./ProfileButton"
 
 function LibraryView() {
+
+    // const [item, setItem] = useState('playlist')
+    const [libraryView, setlibraryView] = useRecoilState(libraryViewState)
+
+    const show = (items) => {
+        setlibraryView(items)
+        console.log(libraryView)
+    }
+
     return (
         <div className="flex-grow h-screen overflow-y-scroll scrollbar-hide ">
             <ProfileButton/>
 
-            <section className={`flex items-end space-x-7 bg-gradient-to-b to-black from-gray-800 h-80 text-white p-8`}>
-
-                {/* <img className="h-44 w-44 shadow-2xl" src={playlist?.images?.[0]?.url} alt=""/> */}
-                <div>
-                    <p>YOUR PLAYLISTS</p>
-                    
-                    {/* <h1 className="text-2xl md:text-3xl lg:text-5xl font-bold">{playlist?.name}</h1> */}
+            <section className={`flex items-center bg-gradient-to-b to-black from-gray-800 h-80 text-white p-8`}>
+                <div className="flex justify-around w-full">
+                    <p className={`text-4xl font-bold hover:scale-110 ${libraryView==='userPlaylists' && 'text-purple-300'}`} onClick={() => show('userPlaylists')}>YOUR PLAYLISTS</p>
+                    <p className={`text-4xl font-bold hover:scale-110 ${libraryView==='userAlbums' && 'text-purple-300'}`} onClick={() => show('userAlbums')}>YOUR ALBUMS</p>
                 </div>
             </section>
-            <Playlists/>
+
+            <LibraryItems/>
             
         </div>
     )
